@@ -114,6 +114,7 @@ Frozen comparisons use the bundled `lightgbm-py/` source (version 4.7.0.99), pin
 - [Complete-training benchmarks](docs/benchmarks.md)
 - [Reference evidence](validation/README.md)
 - [Guidance for coding agents](AGENTS.md)
+- [Metal performance task plan](TASKS.md)
 
 Build local API documentation with `cargo doc --locked --no-deps --open`.
 
