@@ -1,0 +1,27 @@
+[package]
+name = "lightgbm-metal-rs"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Rust histogram gradient boosting with optional Apple Silicon Metal acceleration"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/alfinsyahruddin/lightgbm-metal-rs"
+exclude = ["lightgbm-py/**", ".build/**", ".codex/**", ".agent/**", "validation/results/**", "**/__pycache__/**"]
+
+[features]
+default = []
+metal = ["dep:objc2", "dep:objc2-foundation", "dep:objc2-metal"]
+
+[dependencies]
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
+thiserror = "=1.0.69"
+
+[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
+objc2 = { version = "=0.5.2", optional = true }
+objc2-foundation = { version = "=0.2.2", optional = true, features = ["NSString", "NSError"] }
+objc2-metal = { version = "=0.2.2", optional = true, features = ["MTLDevice", "MTLBuffer", "MTLResource", "MTLLibrary", "MTLCommandQueue", "MTLCommandBuffer", "MTLCommandEncoder", "MTLComputeCommandEncoder", "MTLComputePipeline", "MTLTypes"] }
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"

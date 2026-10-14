@@ -1,0 +1,9 @@
+{
+  "timestamp_utc": "2026-10-14T08:57:12.849994+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "metal": "passed_on_real_gpu",
+  "device": "Graphics/Displays:\n\n    Apple M4 Pro:\n\n      Chipset Model: Apple M4 Pro\n      Type: GPU\n      Bus: Built-In\n      Total Number of Cores: 20\n      Vendor: Apple (0x106b)\n      Metal Support: Metal 4\n      Displays:\n        Color LCD:\n          Display Type: Built-in Liquid Retina XDR Display\n          Resolution: 3024 x 1964 Retina\n          Main Display: Yes\n          Mirror: Off\n          Online: Yes\n          Automatically Adjust Brightness: No\n          Connection Type: Internal\n\n",
+  "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "status": "passed"
+}

@@ -1,0 +1,1186 @@
+{
+  "timestamp_utc": "2026-10-14T08:21:03.508161+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit",
+  "device": "Graphics/Displays:\n\n    Apple M4 Pro:\n\n      Chipset Model: Apple M4 Pro\n      Type: GPU\n      Bus: Built-In\n      Total Number of Cores: 20\n      Vendor: Apple (0x106b)\n      Metal Support: Metal 4\n      Displays:\n        Color LCD:\n          Display Type: Built-in Liquid Retina XDR Display\n          Resolution: 3024 x 1964 Retina\n          Main Display: Yes\n          Mirror: Off\n          Online: Yes\n          Automatically Adjust Brightness: No\n          Connection Type: Internal\n\n",
+  "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+  "numpy": "2.3.5",
+  "upstream_provenance": {
+    "source_tree": "304abc072db7176ed1b2e2d7de4f4178881ef3a1",
+    "version": "4.7.0.99",
+    "dependency_metadata_commit": "5831ee577776949d26d21efa581ec904bda80483",
+    "dependencies": {
+      "eigen": {
+        "url": "https://gitlab.com/libeigen/eigen.git",
+        "commit": "3147391d946bb4b6c68edd901f2add6ac1f31f8c"
+      },
+      "fmt": {
+        "url": "https://github.com/fmtlib/fmt.git",
+        "commit": "8303d140a1a11f19b982a9f664bbe59a1ccda3f4"
+      },
+      "fast_double_parser": {
+        "url": "https://github.com/lemire/fast_double_parser.git",
+        "commit": "252029ddac664370bdda3f0761675785d92a1573"
+      },
+      "nanoarrow": {
+        "url": "https://github.com/apache/arrow-nanoarrow.git",
+        "commit": "a579fbf5d192e85b6249935e117de7d02a6dc4e9"
+      }
+    },
+    "notes": "The vendored source omits external dependency headers. These explicit dependency pins come from upstream metadata and are populated only in the isolated reference build. The library implementation does not depend on them.",
+    "library": ".build/reference/source/lightgbm-py/lib_lightgbm.dylib",
+    "library_sha256": "af3a90da8d04a490512e2029b7a31ab545b4b7354668e776442de9418145bd12",
+    "python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "cmake": "cmake version 4.4.0"
+  },
+  "measured_warm_runs": 1,
+  "warmup_runs": 1,
+  "cold_policy": "first training call in each baseline process; OS shader caches may already be warm",
+  "cpu_threads": 1,
+  "cases": [
+    {
+      "input": {
+        "name": "medium_regression_l2_63",
+        "rows": 100000,
+        "cols": 32,
+        "train_rows": 80000,
+        "features": ".build/bench/medium_regression_l2/features.f64",
+        "labels": ".build/bench/medium_regression_l2/labels.f64",
+        "objective": "regression_l2",
+        "max_bin": 63,
+        "data_sha256": {
+          "features": "8e6ee1fb76e52f38175e12af6344baaea82ebb301b560dd12aeb099e305eb2f2",
+          "labels": "59f53c10b6cfdd1e0d33f83e8259c1bb6650ffdd4e5c5f81d97579657c806a24"
+        },
+        "generator": {
+          "seed": 20261014,
+          "algorithm": "PCG64",
+          "numpy": "2.3.5",
+          "script_sha256": "d4b8af834a0324b7c3a51b98ff68840daf87ba51a91a87f949ad5420b0ca4b97"
+        },
+        "dtype": "float64-le"
+      },
+      "baselines": [
+        {
+          "backend": "upstream_cpu",
+          "runs": [
+            {
+              "preprocessing_seconds": 0.08437433400104055,
+              "backend_setup_seconds": 0.00038387499989767093,
+              "training_seconds": 0.448633083000459,
+              "end_to_end_seconds": 0.5333912920013972,
+              "quality": 0.12617527381483154,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "cold_process"
+            },
+            {
+              "preprocessing_seconds": 0.08523129099921789,
+              "backend_setup_seconds": 0.0002286670005560154,
+              "training_seconds": 0.458618500000739,
+              "end_to_end_seconds": 0.5440784580005129,
+              "quality": 0.12617527381483154,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "warmup"
+            },
+            {
+              "preprocessing_seconds": 0.07718183399992995,
+              "backend_setup_seconds": 0.00014600000031350646,
+              "training_seconds": 0.4544167500007461,
+              "end_to_end_seconds": 0.5317445840009896,
+              "quality": 0.12617527381483154,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "measured_warm"
+            }
+          ],
+          "process_peak_rss_bytes": 137920512,
+          "median_warm": {
+            "preprocessing_seconds": 0.07718183399992995,
+            "backend_setup_seconds": 0.00014600000031350646,
+            "training_seconds": 0.4544167500007461,
+            "end_to_end_seconds": 0.5317445840009896,
+            "quality": 0.12617527381483154
+          }
+        },
+        {
+          "backend": "cpu",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_regression_l2_63",
+          "cols": 32,
+          "config": {
+            "backend": "cpu",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 63,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "regression_l2"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 63,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 1.67e-07,
+              "end_to_end_seconds": 1.163522542,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.07237379199999999,
+              "quality": 0.12617527381483185,
+              "training_seconds": 1.091031333
+            },
+            {
+              "backend_setup_seconds": 3.75e-07,
+              "end_to_end_seconds": 1.18001875,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.050646792,
+              "quality": 0.12617527381483185,
+              "training_seconds": 1.1293135
+            },
+            {
+              "backend_setup_seconds": 6.25e-07,
+              "end_to_end_seconds": 1.138163209,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.053825917,
+              "quality": 0.12617527381483185,
+              "training_seconds": 1.084284708
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 73859072,
+          "median_warm": {
+            "preprocessing_seconds": 0.053825917,
+            "backend_setup_seconds": 6.25e-07,
+            "training_seconds": 1.084284708,
+            "end_to_end_seconds": 1.138163209,
+            "quality": 0.12617527381483185
+          }
+        },
+        {
+          "backend": "metal",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_regression_l2_63",
+          "cols": 32,
+          "config": {
+            "backend": "metal",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 63,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "regression_l2"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 63,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 0.038079125,
+              "end_to_end_seconds": 1.182357292,
+              "gpu_dispatches": 6462,
+              "peak_histogram_bytes": 2007936,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.053348584000000004,
+              "quality": 0.12617527368044915,
+              "training_seconds": 1.090135416
+            },
+            {
+              "backend_setup_seconds": 0.001101792,
+              "end_to_end_seconds": 1.144762125,
+              "gpu_dispatches": 6462,
+              "peak_histogram_bytes": 2007936,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.050914209,
+              "quality": 0.12617527368044915,
+              "training_seconds": 1.091891625
+            },
+            {
+              "backend_setup_seconds": 0.000766917,
+              "end_to_end_seconds": 1.241462959,
+              "gpu_dispatches": 6462,
+              "peak_histogram_bytes": 2007936,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.052897625,
+              "quality": 0.12617527368044915,
+              "training_seconds": 1.186693708
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 88408064,
+          "median_warm": {
+            "preprocessing_seconds": 0.052897625,
+            "backend_setup_seconds": 0.000766917,
+            "training_seconds": 1.186693708,
+            "end_to_end_seconds": 1.241462959,
+            "quality": 0.12617527368044915
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "name": "medium_regression_l2_255",
+        "rows": 100000,
+        "cols": 32,
+        "train_rows": 80000,
+        "features": ".build/bench/medium_regression_l2/features.f64",
+        "labels": ".build/bench/medium_regression_l2/labels.f64",
+        "objective": "regression_l2",
+        "max_bin": 255,
+        "data_sha256": {
+          "features": "8e6ee1fb76e52f38175e12af6344baaea82ebb301b560dd12aeb099e305eb2f2",
+          "labels": "59f53c10b6cfdd1e0d33f83e8259c1bb6650ffdd4e5c5f81d97579657c806a24"
+        },
+        "generator": {
+          "seed": 20261014,
+          "algorithm": "PCG64",
+          "numpy": "2.3.5",
+          "script_sha256": "d4b8af834a0324b7c3a51b98ff68840daf87ba51a91a87f949ad5420b0ca4b97"
+        },
+        "dtype": "float64-le"
+      },
+      "baselines": [
+        {
+          "backend": "upstream_cpu",
+          "runs": [
+            {
+              "preprocessing_seconds": 0.09412145900023461,
+              "backend_setup_seconds": 0.0005412499995145481,
+              "training_seconds": 0.5171736249994865,
+              "end_to_end_seconds": 0.6118363339992356,
+              "quality": 0.15688513407797375,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "cold_process"
+            },
+            {
+              "preprocessing_seconds": 0.09635774999878777,
+              "backend_setup_seconds": 0.00021079200087115169,
+              "training_seconds": 0.5146641249993991,
+              "end_to_end_seconds": 0.611232666999058,
+              "quality": 0.15688513407797375,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "warmup"
+            },
+            {
+              "preprocessing_seconds": 0.08718720800061419,
+              "backend_setup_seconds": 0.00014945899965823628,
+              "training_seconds": 0.4863920829993731,
+              "end_to_end_seconds": 0.5737287499996455,
+              "quality": 0.15688513407797375,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "regression",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "measured_warm"
+            }
+          ],
+          "process_peak_rss_bytes": 151339008,
+          "median_warm": {
+            "preprocessing_seconds": 0.08718720800061419,
+            "backend_setup_seconds": 0.00014945899965823628,
+            "training_seconds": 0.4863920829993731,
+            "end_to_end_seconds": 0.5737287499996455,
+            "quality": 0.15688513407797375
+          }
+        },
+        {
+          "backend": "cpu",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_regression_l2_255",
+          "cols": 32,
+          "config": {
+            "backend": "cpu",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 255,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "regression_l2"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 255,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 4.2e-08,
+              "end_to_end_seconds": 1.3826425,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.059638458,
+              "quality": 0.15688513407797391,
+              "training_seconds": 1.322943875
+            },
+            {
+              "backend_setup_seconds": 3.33e-07,
+              "end_to_end_seconds": 1.4327255,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.060757416999999994,
+              "quality": 0.15688513407797391,
+              "training_seconds": 1.371896542
+            },
+            {
+              "backend_setup_seconds": 3.33e-07,
+              "end_to_end_seconds": 1.403015667,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.059863166,
+              "quality": 0.15688513407797391,
+              "training_seconds": 1.3431012500000001
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 86065152,
+          "median_warm": {
+            "preprocessing_seconds": 0.059863166,
+            "backend_setup_seconds": 3.33e-07,
+            "training_seconds": 1.3431012500000001,
+            "end_to_end_seconds": 1.403015667,
+            "quality": 0.15688513407797391
+          }
+        },
+        {
+          "backend": "metal",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_regression_l2_255",
+          "cols": 32,
+          "config": {
+            "backend": "metal",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 255,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "regression_l2"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 255,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 0.044089584,
+              "end_to_end_seconds": 1.806028416,
+              "gpu_dispatches": 7332,
+              "peak_histogram_bytes": 8127360,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.059782833,
+              "quality": 0.15688513404874774,
+              "training_seconds": 1.701214916
+            },
+            {
+              "backend_setup_seconds": 0.002864875,
+              "end_to_end_seconds": 1.7742717909999999,
+              "gpu_dispatches": 7332,
+              "peak_histogram_bytes": 8127360,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.062397833,
+              "quality": 0.15688513404874774,
+              "training_seconds": 1.7081920830000001
+            },
+            {
+              "backend_setup_seconds": 0.000777917,
+              "end_to_end_seconds": 1.727670459,
+              "gpu_dispatches": 7332,
+              "peak_histogram_bytes": 8127360,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.056317375,
+              "quality": 0.15688513404874774,
+              "training_seconds": 1.6698041670000001
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 101072896,
+          "median_warm": {
+            "preprocessing_seconds": 0.056317375,
+            "backend_setup_seconds": 0.000777917,
+            "training_seconds": 1.6698041670000001,
+            "end_to_end_seconds": 1.727670459,
+            "quality": 0.15688513404874774
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "name": "medium_binary_logloss_63",
+        "rows": 100000,
+        "cols": 32,
+        "train_rows": 80000,
+        "features": ".build/bench/medium_binary_logloss/features.f64",
+        "labels": ".build/bench/medium_binary_logloss/labels.f64",
+        "objective": "binary_logloss",
+        "max_bin": 63,
+        "data_sha256": {
+          "features": "8e6ee1fb76e52f38175e12af6344baaea82ebb301b560dd12aeb099e305eb2f2",
+          "labels": "1b2d89c3004d0a450710184ceb5d0ea24986fa4f4bcbf9506de3a71fed00dd99"
+        },
+        "generator": {
+          "seed": 20261014,
+          "algorithm": "PCG64",
+          "numpy": "2.3.5",
+          "script_sha256": "d4b8af834a0324b7c3a51b98ff68840daf87ba51a91a87f949ad5420b0ca4b97"
+        },
+        "dtype": "float64-le"
+      },
+      "baselines": [
+        {
+          "backend": "upstream_cpu",
+          "runs": [
+            {
+              "preprocessing_seconds": 0.08521954200114124,
+              "backend_setup_seconds": 0.0005571250003413297,
+              "training_seconds": 0.5150781659995118,
+              "end_to_end_seconds": 0.6008548330009944,
+              "quality": 0.10766801666309686,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "cold_process"
+            },
+            {
+              "preprocessing_seconds": 0.08408454199889093,
+              "backend_setup_seconds": 0.0006017920004524058,
+              "training_seconds": 0.4966015410009277,
+              "end_to_end_seconds": 0.581287875000271,
+              "quality": 0.10766801666309686,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "warmup"
+            },
+            {
+              "preprocessing_seconds": 0.08135529200080782,
+              "backend_setup_seconds": 0.00046354099868040066,
+              "training_seconds": 0.47738837500037334,
+              "end_to_end_seconds": 0.5592072079998616,
+              "quality": 0.10766801666309686,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 63,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "measured_warm"
+            }
+          ],
+          "process_peak_rss_bytes": 167018496,
+          "median_warm": {
+            "preprocessing_seconds": 0.08135529200080782,
+            "backend_setup_seconds": 0.00046354099868040066,
+            "training_seconds": 0.47738837500037334,
+            "end_to_end_seconds": 0.5592072079998616,
+            "quality": 0.10766801666309686
+          }
+        },
+        {
+          "backend": "cpu",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_binary_logloss_63",
+          "cols": 32,
+          "config": {
+            "backend": "cpu",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 63,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "binary_logloss"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 63,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 5.42e-07,
+              "end_to_end_seconds": 1.200963166,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.052648542,
+              "quality": 0.10560893681271213,
+              "training_seconds": 1.1482548750000001
+            },
+            {
+              "backend_setup_seconds": 6.66e-07,
+              "end_to_end_seconds": 1.20485925,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.054775375999999994,
+              "quality": 0.10560893681271213,
+              "training_seconds": 1.1500219170000001
+            },
+            {
+              "backend_setup_seconds": 7.5e-07,
+              "end_to_end_seconds": 1.210522625,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 1499904,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.053214792,
+              "quality": 0.10560893681271213,
+              "training_seconds": 1.157257959
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 71663616,
+          "median_warm": {
+            "preprocessing_seconds": 0.053214792,
+            "backend_setup_seconds": 7.5e-07,
+            "training_seconds": 1.157257959,
+            "end_to_end_seconds": 1.210522625,
+            "quality": 0.10560893681271213
+          }
+        },
+        {
+          "backend": "metal",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_binary_logloss_63",
+          "cols": 32,
+          "config": {
+            "backend": "metal",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 63,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "binary_logloss"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 63,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 0.044697209,
+              "end_to_end_seconds": 1.320719,
+              "gpu_dispatches": 6568,
+              "peak_histogram_bytes": 2007936,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.058173333,
+              "quality": 0.10560893687691916,
+              "training_seconds": 1.217129375
+            },
+            {
+              "backend_setup_seconds": 0.000725709,
+              "end_to_end_seconds": 1.239237625,
+              "gpu_dispatches": 6568,
+              "peak_histogram_bytes": 2007936,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.057196374,
+              "quality": 0.10560893687691916,
+              "training_seconds": 1.180481458
+            },
+            {
+              "backend_setup_seconds": 0.000823583,
+              "end_to_end_seconds": 1.226833541,
+              "gpu_dispatches": 6568,
+              "peak_histogram_bytes": 2007936,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.052863999999999994,
+              "quality": 0.10560893687691916,
+              "training_seconds": 1.172331875
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 86769664,
+          "median_warm": {
+            "preprocessing_seconds": 0.052863999999999994,
+            "backend_setup_seconds": 0.000823583,
+            "training_seconds": 1.172331875,
+            "end_to_end_seconds": 1.226833541,
+            "quality": 0.10560893687691916
+          }
+        }
+      ]
+    },
+    {
+      "input": {
+        "name": "medium_binary_logloss_255",
+        "rows": 100000,
+        "cols": 32,
+        "train_rows": 80000,
+        "features": ".build/bench/medium_binary_logloss/features.f64",
+        "labels": ".build/bench/medium_binary_logloss/labels.f64",
+        "objective": "binary_logloss",
+        "max_bin": 255,
+        "data_sha256": {
+          "features": "8e6ee1fb76e52f38175e12af6344baaea82ebb301b560dd12aeb099e305eb2f2",
+          "labels": "1b2d89c3004d0a450710184ceb5d0ea24986fa4f4bcbf9506de3a71fed00dd99"
+        },
+        "generator": {
+          "seed": 20261014,
+          "algorithm": "PCG64",
+          "numpy": "2.3.5",
+          "script_sha256": "d4b8af834a0324b7c3a51b98ff68840daf87ba51a91a87f949ad5420b0ca4b97"
+        },
+        "dtype": "float64-le"
+      },
+      "baselines": [
+        {
+          "backend": "upstream_cpu",
+          "runs": [
+            {
+              "preprocessing_seconds": 0.08994629100016027,
+              "backend_setup_seconds": 0.0006934589982847683,
+              "training_seconds": 0.5196630410009675,
+              "end_to_end_seconds": 0.6103027909994125,
+              "quality": 0.10711565882704945,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "cold_process"
+            },
+            {
+              "preprocessing_seconds": 0.0886630420009169,
+              "backend_setup_seconds": 0.0009064169989869697,
+              "training_seconds": 0.531055750001542,
+              "end_to_end_seconds": 0.6206252090014459,
+              "quality": 0.10711565882704945,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "warmup"
+            },
+            {
+              "preprocessing_seconds": 0.08483508300014364,
+              "backend_setup_seconds": 0.0005608339997706935,
+              "training_seconds": 0.5154222080000181,
+              "end_to_end_seconds": 0.6008181249999325,
+              "quality": 0.10711565882704945,
+              "gpu_dispatches": 0,
+              "resolved_parameters": {
+                "objective": "binary",
+                "learning_rate": 0.1,
+                "num_leaves": 31,
+                "max_depth": -1,
+                "max_bin": 255,
+                "min_data_in_leaf": 20,
+                "min_sum_hessian_in_leaf": 0.001,
+                "min_gain_to_split": 0,
+                "lambda_l1": 0,
+                "lambda_l2": 0,
+                "bin_construct_sample_cnt": 80000,
+                "min_data_in_bin": 3,
+                "feature_pre_filter": "false",
+                "enable_bundle": "false",
+                "enable_sparse": "false",
+                "use_missing": "true",
+                "zero_as_missing": "false",
+                "device_type": "cpu",
+                "deterministic": "true",
+                "force_col_wise": "true",
+                "num_threads": 1,
+                "bagging_fraction": 1,
+                "bagging_freq": 0,
+                "feature_fraction": 1,
+                "use_quantized_grad": "false",
+                "sigmoid": 1,
+                "verbosity": -1
+              },
+              "phase": "measured_warm"
+            }
+          ],
+          "process_peak_rss_bytes": 128679936,
+          "median_warm": {
+            "preprocessing_seconds": 0.08483508300014364,
+            "backend_setup_seconds": 0.0005608339997706935,
+            "training_seconds": 0.5154222080000181,
+            "end_to_end_seconds": 0.6008181249999325,
+            "quality": 0.10711565882704945
+          }
+        },
+        {
+          "backend": "cpu",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_binary_logloss_255",
+          "cols": 32,
+          "config": {
+            "backend": "cpu",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 255,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "binary_logloss"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 255,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 8.33e-07,
+              "end_to_end_seconds": 1.6325093750000002,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.066079667,
+              "quality": 0.10371138629964483,
+              "training_seconds": 1.566351125
+            },
+            {
+              "backend_setup_seconds": 4.58e-07,
+              "end_to_end_seconds": 1.552106959,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.06542604199999999,
+              "quality": 0.10371138629964483,
+              "training_seconds": 1.486546
+            },
+            {
+              "backend_setup_seconds": 5.83e-07,
+              "end_to_end_seconds": 1.5122480409999999,
+              "gpu_dispatches": 0,
+              "peak_histogram_bytes": 6071040,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.056078875,
+              "quality": 0.10371138629964483,
+              "training_seconds": 1.456104667
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 86966272,
+          "median_warm": {
+            "preprocessing_seconds": 0.056078875,
+            "backend_setup_seconds": 5.83e-07,
+            "training_seconds": 1.456104667,
+            "end_to_end_seconds": 1.5122480409999999,
+            "quality": 0.10371138629964483
+          }
+        },
+        {
+          "backend": "metal",
+          "binned_dataset_bytes": 2560000,
+          "case": "medium_binary_logloss_255",
+          "cols": 32,
+          "config": {
+            "backend": "metal",
+            "histogram_workspace_bytes": 268435456,
+            "iterations": 100,
+            "lambda_l1": 0.0,
+            "lambda_l2": 0.0,
+            "learning_rate": 0.1,
+            "max_bin": 255,
+            "max_depth": null,
+            "min_data_in_leaf": 20,
+            "min_gain_to_split": 0.0,
+            "min_sum_hessian_in_leaf": 0.001,
+            "num_leaves": 31,
+            "objective": "binary_logloss"
+          },
+          "cpu_threads": 1,
+          "histogram_budget_bytes": 268435456,
+          "max_bin": 255,
+          "raw_input_bytes": 26400000,
+          "rows": 100000,
+          "runs": [
+            {
+              "backend_setup_seconds": 0.03881025,
+              "end_to_end_seconds": 2.112910083,
+              "gpu_dispatches": 7392,
+              "peak_histogram_bytes": 8127360,
+              "phase": "cold_process",
+              "preprocessing_seconds": 0.058723958,
+              "quality": 0.10371138632556916,
+              "training_seconds": 2.014503541
+            },
+            {
+              "backend_setup_seconds": 0.000764417,
+              "end_to_end_seconds": 2.2428320409999998,
+              "gpu_dispatches": 7392,
+              "peak_histogram_bytes": 8127360,
+              "phase": "warmup",
+              "preprocessing_seconds": 0.056490541000000005,
+              "quality": 0.10371138632556916,
+              "training_seconds": 2.184742166
+            },
+            {
+              "backend_setup_seconds": 0.000716792,
+              "end_to_end_seconds": 1.915628334,
+              "gpu_dispatches": 7392,
+              "peak_histogram_bytes": 8127360,
+              "phase": "measured_warm",
+              "preprocessing_seconds": 0.061573209,
+              "quality": 0.10371138632556916,
+              "training_seconds": 1.852537917
+            }
+          ],
+          "train_rows": 80000,
+          "process_peak_rss_bytes": 101040128,
+          "median_warm": {
+            "preprocessing_seconds": 0.061573209,
+            "backend_setup_seconds": 0.000716792,
+            "training_seconds": 1.852537917,
+            "end_to_end_seconds": 1.915628334,
+            "quality": 0.10371138632556916
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "source_tree": "304abc072db7176ed1b2e2d7de4f4178881ef3a1",
+  "version": "4.7.0.99",
+  "reference_provenance": {
+    "source_tree": "304abc072db7176ed1b2e2d7de4f4178881ef3a1",
+    "version": "4.7.0.99",
+    "dependency_metadata_commit": "5831ee577776949d26d21efa581ec904bda80483",
+    "dependencies": {
+      "eigen": {
+        "url": "https://gitlab.com/libeigen/eigen.git",
+        "commit": "3147391d946bb4b6c68edd901f2add6ac1f31f8c"
+      },
+      "fmt": {
+        "url": "https://github.com/fmtlib/fmt.git",
+        "commit": "8303d140a1a11f19b982a9f664bbe59a1ccda3f4"
+      },
+      "fast_double_parser": {
+        "url": "https://github.com/lemire/fast_double_parser.git",
+        "commit": "252029ddac664370bdda3f0761675785d92a1573"
+      },
+      "nanoarrow": {
+        "url": "https://github.com/apache/arrow-nanoarrow.git",
+        "commit": "a579fbf5d192e85b6249935e117de7d02a6dc4e9"
+      }
+    },
+    "notes": "The vendored source omits external dependency headers. These explicit dependency pins come from upstream metadata and are populated only in the isolated reference build. The library implementation does not depend on them.",
+    "library": ".build/reference/source/lightgbm-py/lib_lightgbm.dylib",
+    "library_sha256": "af3a90da8d04a490512e2029b7a31ab545b4b7354668e776442de9418145bd12",
+    "python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "cmake": "cmake version 4.4.0"
+  },
+  "fixture_sha256": {
+    "regression": "c0bff446f49dfac83cd99031b462765f6dd26d371f21d268edc1fd05989c15de",
+    "binary": "981c5069854b46375e966403a98bbed340e6175637343b733fb10ca0562e9a65",
+    "regularized": "3ea41185aee45ee0883e30d7d7f2f97863aeaa9e2f2e8d57e44d3ccd49495eb8",
+    "depth": "a645212fa50393103ade67d3ae3964634fb63807f407d42519114142d859787b",
+    "leaf_limit": "d949d6bae4fd34a8415b4a3872c2a042e4b9c3a6903b4391193131c60b98c8cf",
+    "min_rows": "5e11b951d7afd99beb47a9fd471d2f095643285d2ac232dc27b3a50db2282cd7",
+    "min_hessian": "04f4afcdafb8c71199a41bc6bb31e2090b389cb996b228fe426df585c68c5d74",
+    "min_gain": "a4e8f3159d27671a537644ff862ffdf5e3782c947df34b55420594dcc72190c5",
+    "two_bins": "2fb49bfcb94925d26e314e2594b265f010f0f68ca5e3ed709f9ea010a81fd586",
+    "constant": "fa349fea7061c1c60ab1eca4693141ac46757ffa4573796e4ea4755042ee2cc8",
+    "all_missing": "d98780cf5aa6474fe00b679247daeee06c6236d3474af7215809d5bfe8004702",
+    "single_class": "b306818f2dee8b7d25cdd866748e692ed6671eeb271d9e4dd8c92602a9d6043c",
+    "unseen_nan": "4c2df5225103fd7f7b26da7d75cf4279219e8ac6fe946b1c8e12cd0a9f2d45ec",
+    "quality_regression_l2": "cd2e12a32fc8410ba2f6ae2c78bd9523c49af5798cd383b710162936c71e210a",
+    "quality_binary_logloss": "03cb0569b4440e1bd2f10549a62244c39b473ebc19b1244fe4e352bdcfae4405"
+  },
+  "generator_python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "generator_platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "generator_sha256": {
+    "scripts/generate_fixtures.py": "78e4c9d8822e5d374a300f6ed864ffdfcd21547e845d175e8954fe1a4fc139ef",
+    "scripts/reference.py": "ab25066ce0470fbe29348625b1eb59922d04c1de7e6ce09607d45109c9a44ba8",
+    "validation/bin_probe.cpp": "df66d7641980e71f2a7f5e18c6b86e03c1c9047e37229a060e15e808cd1c759b"
+  },
+  "acceptance": {
+    "cpu_raw_atol": 1e-08,
+    "cpu_raw_rtol": 1e-06,
+    "metal_raw_atol": 1e-05,
+    "metal_raw_rtol": 0.0001,
+    "rmse_ratio": 1.02,
+    "rmse_atol": 1e-06,
+    "logloss_atol": 0.01
+  }
+}

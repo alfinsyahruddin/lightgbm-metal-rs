@@ -1,0 +1,149 @@
+$ /opt/homebrew/opt/python@3.14/bin/python3.14 scripts/verify_fixtures.py
+Verified 15 frozen fixtures
+
+$ cargo fmt --check
+
+$ cargo clippy --all-targets --all-features --locked -- -D warnings
+    Checking lightgbm-metal-rs v0.1.0 (/Users/alfin/code/github/lightgbm-metal-rs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+
+$ cargo test --locked --no-default-features
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running unittests src/lib.rs (target/debug/deps/lightgbm_metal_rs-f6bbb72a63339add)
+
+running 14 tests
+test objective::tests::extreme_scores_are_stable_and_gradient_overflow_fails ... ok
+test dataset::tests::validates_training_labels_and_empty_prediction_data ... ok
+test dataset::tests::validates_shapes_and_feature_values_without_large_allocations ... ok
+test config::tests::defaults_match_supported_reference_subset ... ok
+test histogram::tests::metal_request_without_support_returns_error ... ok
+test histogram::tests::cpu_is_available_without_framework_initialization ... ok
+test model::tests::binary_probabilities_are_finite_for_extreme_scores ... ok
+test config::tests::invalid_numeric_domains_fail ... ok
+test histogram::tests::cpu_histograms_preserve_subset_counts_missing_and_empty_bins ... ok
+test config::tests::json_preserves_difficult_f64_values_exactly ... ok
+test model::tests::raw_predictions_missing_routing_and_roundtrip_are_exact ... ok
+test model::tests::malformed_models_are_rejected_before_prediction ... ok
+test objective::tests::initial_scores_and_derivatives_match_frozen_reference ... ok
+test binning::tests::numeric_bins_match_frozen_upstream_mapper ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (target/debug/deps/reference-d44bc3ba1a4f70c0)
+
+running 4 tests
+test workspace_failure_is_explicit_before_oversized_histogram_allocation ... ok
+test bounded_cache_eviction_matches_unbounded_cpu_training ... ok
+test small_cpu_models_match_frozen_upstream_raw_predictions ... ok
+test cpu_quality_meets_frozen_regression_and_binary_acceptance ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.64s
+
+   Doc-tests lightgbm_metal_rs
+
+running 2 tests
+test src/dataset.rs - dataset::DenseMatrix (line 7) ... ok
+test src/training.rs - training::train (line 23) ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.10s
+
+
+Metal backend available
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/examples/backend_probe --metal`
+
+$ cargo test --locked --features metal
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/lightgbm_metal_rs-afec583c238f0493)
+
+running 16 tests
+test histogram::metal::tests::invalid_metal_source_fails_without_histogram_results ... ignored, requires real Apple Silicon Metal access; run the hardware validation command
+test histogram::metal::tests::metal_histograms_match_cpu_on_real_gpu ... ignored, requires real Apple Silicon Metal access; run the hardware validation command
+test histogram::tests::cpu_is_available_without_framework_initialization ... ok
+test model::tests::binary_probabilities_are_finite_for_extreme_scores ... ok
+test config::tests::invalid_numeric_domains_fail ... ok
+test dataset::tests::validates_shapes_and_feature_values_without_large_allocations ... ok
+test config::tests::defaults_match_supported_reference_subset ... ok
+test histogram::metal::tests::injected_allocation_and_command_errors_are_explicit ... ok
+test dataset::tests::validates_training_labels_and_empty_prediction_data ... ok
+test objective::tests::extreme_scores_are_stable_and_gradient_overflow_fails ... ok
+test histogram::tests::cpu_histograms_preserve_subset_counts_missing_and_empty_bins ... ok
+test config::tests::json_preserves_difficult_f64_values_exactly ... ok
+test model::tests::raw_predictions_missing_routing_and_roundtrip_are_exact ... ok
+test model::tests::malformed_models_are_rejected_before_prediction ... ok
+test objective::tests::initial_scores_and_derivatives_match_frozen_reference ... ok
+test binning::tests::numeric_bins_match_frozen_upstream_mapper ... ok
+
+test result: ok. 14 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (target/debug/deps/reference-4dd62297b3b88362)
+
+running 6 tests
+test metal_quality_and_portable_model_evidence ... ignored, requires real Apple Silicon Metal access; run the hardware validation command
+test metal_small_models_and_bounded_cache_match_reference ... ignored, requires real Apple Silicon Metal access; run the hardware validation command
+test workspace_failure_is_explicit_before_oversized_histogram_allocation ... ok
+test bounded_cache_eviction_matches_unbounded_cpu_training ... ok
+test small_cpu_models_match_frozen_upstream_raw_predictions ... ok
+test cpu_quality_meets_frozen_regression_and_binary_acceptance ... ok
+
+test result: ok. 4 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.65s
+
+   Doc-tests lightgbm_metal_rs
+
+running 2 tests
+test src/dataset.rs - dataset::DenseMatrix (line 7) ... ok
+test src/training.rs - training::train (line 23) ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.82s
+
+
+$ cargo test --locked --features metal -- --ignored --nocapture --test-threads=1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running unittests src/lib.rs (target/debug/deps/lightgbm_metal_rs-afec583c238f0493)
+
+running 2 tests
+test histogram::metal::tests::invalid_metal_source_fails_without_histogram_results ... ok
+test histogram::metal::tests::metal_histograms_match_cpu_on_real_gpu ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.15s
+
+     Running tests/reference.rs (target/debug/deps/reference-4dd62297b3b88362)
+
+running 2 tests
+test metal_quality_and_portable_model_evidence ... quality_regression_l2: Metal 0.17467973437109025, CPU 0.17467973463715106, upstream 0.17467973463715106, dispatches 5424, peak workspace 562464
+quality_binary_logloss: Metal 0.19837364721884557, CPU 0.19837364848868894, upstream 0.20971667212611808, dispatches 5236, peak workspace 399168
+ok
+test metal_small_models_and_bounded_cache_match_reference ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 2.57s
+
+   Doc-tests lightgbm_metal_rs
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+
+$ cargo run --locked --no-default-features --example load_metal_model
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running `target/debug/examples/load_metal_model`
+CPU-only inference exactly matches 512 Metal-trained predictions
+
+$ cargo run --locked --features metal --example train -- --metal
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/examples/train --metal`
+{
+  "backend": "metal",
+  "gpu_histogram_dispatches": 62,
+  "peak_histogram_workspace_bytes": 6048,
+  "trees": 10,
+  "preprocessing_seconds": 0.000157791,
+  "backend_setup_seconds": 0.061997584,
+  "training_seconds": 0.011204916,
+  "histogram_wall_seconds": 0.010762376,
+  "histogram_gpu_seconds": 0.0008428750006714836,
+  "histogram_calls": 31,
+  "small_leaf_histogram_calls": 31
+}
+First prediction: 1.6973568832093753; last: 4.302643185481428
+Native model saved and verified: target/demo-model.json

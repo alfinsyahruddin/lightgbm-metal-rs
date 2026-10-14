@@ -1,0 +1,12 @@
+{
+  "source_tree": "304abc072db7176ed1b2e2d7de4f4178881ef3a1",
+  "version": "4.7.0.99",
+  "dependency_metadata_commit": "5831ee577776949d26d21efa581ec904bda80483",
+  "dependencies": {
+    "eigen": {"url": "https://gitlab.com/libeigen/eigen.git", "commit": "3147391d946bb4b6c68edd901f2add6ac1f31f8c"},
+    "fmt": {"url": "https://github.com/fmtlib/fmt.git", "commit": "8303d140a1a11f19b982a9f664bbe59a1ccda3f4"},
+    "fast_double_parser": {"url": "https://github.com/lemire/fast_double_parser.git", "commit": "252029ddac664370bdda3f0761675785d92a1573"},
+    "nanoarrow": {"url": "https://github.com/apache/arrow-nanoarrow.git", "commit": "a579fbf5d192e85b6249935e117de7d02a6dc4e9"}
+  },
+  "notes": "The vendored source omits external dependency headers. These explicit dependency pins come from upstream metadata and are populated only in the isolated reference build. The library implementation does not depend on them."
+}
