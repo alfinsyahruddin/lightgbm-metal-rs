@@ -2,7 +2,7 @@
 
 Measured on the Apple M4 Pro (20 GPU cores), using the pinned bundled LightGBM source and the Rust package in this repository. CPU baselines use one thread. These are measurements for these workloads and settings; backend selection remains explicit.
 
-Captured at `2026-10-14T08:28:44.521270+00:00`. Rust: `rustc 1.97.1 (8bab26f4f 2026-07-14)`. NumPy: `2.3.5`.
+Captured at `2026-10-15T01:48:17.076822+00:00`. Rust: `rustc 1.97.1 (8bab26f4f 2026-07-14)`. NumPy: `2.5.4`.
 
 Each case contains one first-call cold run, one warm-up, and five measured warm runs in a fresh process per baseline. The tables report medians of the five warm runs. OS shader caches may already be warm. Raw-data generation and file I/O are excluded; matrix validation, binning/Dataset construction, backend setup, and fitting are included. Twenty percent of rows are held out for validation. All models use 100 rounds, 31 leaves, learning rate 0.1, no sampling, and the matched supported parameter subset.
 
@@ -12,18 +12,18 @@ The raw report contains every run, phase timings, input hashes, generator detail
 
 | Total rows × features | Objective | Bins | Upstream CPU (s) | Rust CPU (s) | Rust Metal (s) | Rust CPU / Metal | Upstream CPU / Metal |
 |---|---|---:|---:|---:|---:|---:|---:|
-| 1,000 × 16 | L2 | 63 | 0.0150 | 0.0214 | 0.3109 | 0.07× | 0.05× |
-| 1,000 × 16 | L2 | 255 | 0.0353 | 0.0536 | 0.3957 | 0.14× | 0.09× |
-| 1,000 × 16 | Binary | 63 | 0.0167 | 0.0211 | 0.3255 | 0.06× | 0.05× |
-| 1,000 × 16 | Binary | 255 | 0.0374 | 0.0541 | 0.3765 | 0.14× | 0.10× |
-| 100,000 × 32 | L2 | 63 | 0.5576 | 1.2028 | 1.2758 | 0.94× | 0.44× |
-| 100,000 × 32 | L2 | 255 | 0.5832 | 1.4132 | 1.8410 | 0.77× | 0.32× |
-| 100,000 × 32 | Binary | 63 | 0.5670 | 1.2159 | 1.2809 | 0.95× | 0.44× |
-| 100,000 × 32 | Binary | 255 | 0.6164 | 1.5287 | 1.8849 | 0.81× | 0.33× |
-| 1,000,000 × 64 | L2 | 63 | 10.8287 | 20.0245 | 8.8647 | 2.26× | 1.22× |
-| 1,000,000 × 64 | L2 | 255 | 11.5723 | 25.8519 | 19.9655 | 1.29× | 0.58× |
-| 1,000,000 × 64 | Binary | 63 | 12.5149 | 23.4036 | 10.7465 | 2.18× | 1.16× |
-| 1,000,000 × 64 | Binary | 255 | 12.4483 | 28.0358 | 21.3302 | 1.31× | 0.58× |
+| 1,000 × 16 | L2 | 63 | 0.0155 | 0.0179 | 0.6578 | 0.03× | 0.02× |
+| 1,000 × 16 | L2 | 255 | 0.0351 | 0.0507 | 0.8085 | 0.06× | 0.04× |
+| 1,000 × 16 | Binary | 63 | 0.0166 | 0.0177 | 0.6561 | 0.03× | 0.03× |
+| 1,000 × 16 | Binary | 255 | 0.0375 | 0.0509 | 0.8043 | 0.06× | 0.05× |
+| 100,000 × 32 | L2 | 63 | 0.5357 | 0.9512 | 1.2983 | 0.73× | 0.41× |
+| 100,000 × 32 | L2 | 255 | 0.5764 | 1.1707 | 2.1393 | 0.55× | 0.27× |
+| 100,000 × 32 | Binary | 63 | 0.5585 | 0.9495 | 1.3109 | 0.72× | 0.43× |
+| 100,000 × 32 | Binary | 255 | 0.6092 | 1.2346 | 2.1032 | 0.59× | 0.29× |
+| 1,000,000 × 64 | L2 | 63 | 10.7766 | 17.4801 | 6.6964 | 2.61× | 1.61× |
+| 1,000,000 × 64 | L2 | 255 | 11.5475 | 22.8942 | 11.5698 | 1.98× | 1.00× |
+| 1,000,000 × 64 | Binary | 63 | 12.7606 | 20.2875 | 7.4840 | 2.71× | 1.71× |
+| 1,000,000 × 64 | Binary | 255 | 12.3381 | 24.3414 | 11.8899 | 2.05× | 1.04× |
 
 Metal is faster than Rust CPU in 4/12 cases. Ratios below 1 mean Metal is slower. Both faster and slower cases are retained; no universal GPU speedup is claimed.
 
@@ -31,33 +31,33 @@ Metal is faster than Rust CPU in 4/12 cases. Ratios below 1 mean Metal is slower
 
 | Case | Upstream CPU (s) | Rust CPU (s) | Rust Metal (s) |
 |---|---:|---:|---:|
-| small_regression_l2_63 | 0.0187 | 0.0248 | 0.4113 |
-| small_regression_l2_255 | 0.0357 | 0.0549 | 0.4430 |
-| small_binary_logloss_63 | 0.0172 | 0.0213 | 0.4077 |
-| small_binary_logloss_255 | 0.0379 | 0.0547 | 0.4335 |
-| medium_regression_l2_63 | 0.5571 | 1.1982 | 1.3346 |
-| medium_regression_l2_255 | 0.5921 | 1.4025 | 1.8020 |
-| medium_binary_logloss_63 | 0.5711 | 1.2312 | 1.4665 |
-| medium_binary_logloss_255 | 0.6193 | 1.5288 | 1.9540 |
-| large_regression_l2_63 | 10.9624 | 20.7169 | 8.8962 |
-| large_regression_l2_255 | 11.6410 | 26.1319 | 19.6923 |
-| large_binary_logloss_63 | 12.8111 | 23.2625 | 10.8484 |
-| large_binary_logloss_255 | 12.6925 | 27.9541 | 21.5761 |
+| small_regression_l2_63 | 0.0173 | 0.0373 | 0.7403 |
+| small_regression_l2_255 | 0.0371 | 0.0524 | 0.8823 |
+| small_binary_logloss_63 | 0.0200 | 0.0184 | 0.7803 |
+| small_binary_logloss_255 | 0.0390 | 0.0507 | 0.8547 |
+| medium_regression_l2_63 | 0.5515 | 0.9267 | 1.3389 |
+| medium_regression_l2_255 | 0.5801 | 1.1724 | 2.1834 |
+| medium_binary_logloss_63 | 0.5663 | 0.9519 | 1.3604 |
+| medium_binary_logloss_255 | 0.6108 | 1.2526 | 2.1809 |
+| large_regression_l2_63 | 11.0630 | 17.6055 | 7.2692 |
+| large_regression_l2_255 | 11.8563 | 23.0431 | 11.5992 |
+| large_binary_logloss_63 | 13.0394 | 20.5487 | 7.5594 |
+| large_binary_logloss_255 | 12.6102 | 24.8937 | 12.0771 |
 
 ## Validation quality
 
 | Case | Metric | Upstream CPU | Rust CPU | Rust Metal |
 |---|---|---:|---:|---:|
 | small_regression_l2_63 | RMSE | 0.21080914 | 0.21080914 | 0.21080914 |
-| small_regression_l2_255 | RMSE | 0.20919406 | 0.20919406 | 0.20919406 |
-| small_binary_logloss_63 | Logloss | 0.14815505 | 0.17178168 | 0.17231501 |
-| small_binary_logloss_255 | Logloss | 0.20118925 | 0.18685366 | 0.18685295 |
+| small_regression_l2_255 | RMSE | 0.20919406 | 0.20919406 | 0.20919405 |
+| small_binary_logloss_63 | Logloss | 0.14815505 | 0.17178168 | 0.15779579 |
+| small_binary_logloss_255 | Logloss | 0.20118925 | 0.18685366 | 0.18479603 |
 | medium_regression_l2_63 | RMSE | 0.12617527 | 0.12617527 | 0.12617527 |
-| medium_regression_l2_255 | RMSE | 0.15688513 | 0.15688513 | 0.15688513 |
-| medium_binary_logloss_63 | Logloss | 0.10766802 | 0.10560894 | 0.10560894 |
-| medium_binary_logloss_255 | Logloss | 0.10711566 | 0.10371139 | 0.10371139 |
+| medium_regression_l2_255 | RMSE | 0.15688513 | 0.15688513 | 0.15688514 |
+| medium_binary_logloss_63 | Logloss | 0.10766802 | 0.10560894 | 0.10560892 |
+| medium_binary_logloss_255 | Logloss | 0.10711566 | 0.10371139 | 0.10371140 |
 | large_regression_l2_63 | RMSE | 0.21385728 | 0.21385728 | 0.21385728 |
-| large_regression_l2_255 | RMSE | 0.11841503 | 0.11841503 | 0.11841503 |
+| large_regression_l2_255 | RMSE | 0.11841503 | 0.11841503 | 0.13228901 |
 | large_binary_logloss_63 | Logloss | 0.09816231 | 0.09714242 | 0.09714242 |
 | large_binary_logloss_255 | Logloss | 0.09624347 | 0.09841464 | 0.09841464 |
 
@@ -67,18 +67,18 @@ Binary trees can differ from upstream because this implementation enforces minim
 
 | Case | Histogram wall (s) | Partial + reduction GPU (s) | Calls on leaves ≤ 4,096 rows | Peak tracked histogram (MiB) |
 |---|---:|---:|---:|---:|
-| small_regression_l2_63 | 0.2896 | 0.0222 | 100.0% | 0.37 |
-| small_regression_l2_255 | 0.3423 | 0.0262 | 100.0% | 1.59 |
-| small_binary_logloss_63 | 0.3034 | 0.0256 | 100.0% | 0.32 |
-| small_binary_logloss_255 | 0.3208 | 0.0246 | 100.0% | 1.31 |
-| medium_regression_l2_63 | 0.8132 | 0.2056 | 71.1% | 1.91 |
-| medium_regression_l2_255 | 1.2831 | 0.6084 | 69.6% | 7.75 |
-| medium_binary_logloss_63 | 0.7717 | 0.1926 | 73.0% | 1.91 |
-| medium_binary_logloss_255 | 1.2316 | 0.5610 | 69.8% | 7.75 |
-| large_regression_l2_63 | 3.7007 | 2.9392 | 33.1% | 11.95 |
-| large_regression_l2_255 | 13.7833 | 12.7692 | 22.9% | 48.37 |
-| large_binary_logloss_63 | 4.2586 | 3.4103 | 22.1% | 11.95 |
-| large_binary_logloss_255 | 14.5496 | 13.4289 | 20.5% | 48.37 |
+| small_regression_l2_63 | 0.4977 | 0.0883 | 70.4% | 0.36 |
+| small_regression_l2_255 | 0.6505 | 0.2342 | 71.4% | 1.54 |
+| small_binary_logloss_63 | 0.4996 | 0.0890 | 71.5% | 0.29 |
+| small_binary_logloss_255 | 0.6484 | 0.2334 | 72.1% | 1.17 |
+| medium_regression_l2_63 | 1.1782 | 0.3648 | 38.7% | 1.91 |
+| medium_regression_l2_255 | 2.0082 | 0.8543 | 40.3% | 7.75 |
+| medium_binary_logloss_63 | 1.1970 | 0.3560 | 40.1% | 1.91 |
+| medium_binary_logloss_255 | 1.9749 | 0.8600 | 40.4% | 7.75 |
+| large_regression_l2_63 | 5.3298 | 4.0231 | 17.8% | 11.95 |
+| large_regression_l2_255 | 10.1216 | 8.6485 | 14.9% | 48.37 |
+| large_binary_logloss_63 | 6.0761 | 4.6546 | 12.1% | 11.95 |
+| large_binary_logloss_255 | 10.4231 | 8.9112 | 12.3% | 48.37 |
 
 Histogram wall time includes command encoding, queueing, synchronization, copies, and GPU execution. GPU timestamps cover the partial/reduction command together. Small leaves pay submission and synchronization overhead despite little arithmetic. Larger workloads provide enough work for the GPU to amortize that cost. The partial histogram buffer scales with row chunks, features, and bins; row tiling and bounded caches keep tracked allocations within the configured 256 MiB cap.
 

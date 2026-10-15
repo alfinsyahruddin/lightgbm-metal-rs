@@ -149,6 +149,22 @@ fn workspace_failure_is_explicit_before_oversized_histogram_allocation() {
 }
 
 #[test]
+#[cfg(all(feature = "metal", target_os = "macos", target_arch = "aarch64"))]
+fn metal_workspace_failure_is_explicit_before_oversized_histogram_allocation() {
+    let x: Vec<_> = (0..60).map(|v| v as f64).collect();
+    let config = TrainingConfig {
+        backend: lightgbm_metal_rs::Backend::Metal,
+        histogram_workspace_bytes: 1,
+        min_data_in_leaf: 1,
+        ..Default::default()
+    };
+    assert!(matches!(
+        train(DenseMatrix::new(&x, 60, 1).unwrap(), &x, &config),
+        Err(lightgbm_metal_rs::Error::Workspace { .. })
+    ));
+}
+
+#[test]
 fn bounded_cache_eviction_matches_unbounded_cpu_training() {
     let fixture = fixture("regression");
     let x = numbers(&fixture["features"]);

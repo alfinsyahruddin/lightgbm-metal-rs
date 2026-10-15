@@ -72,7 +72,7 @@ Metal training targets Apple Silicon macOS 11 or newer with a usable unified-mem
 cargo run --locked --features metal --example train -- --metal
 ```
 
-For a dependent package, add `features = ["metal"]` to its dependency declaration and set `backend: Backend::Metal` in `TrainingConfig`. An unavailable or failed Metal backend returns an error; there is no implicit CPU fallback. Objectives, split scans, row partitioning, tree selection, and score updates remain on CPU. Saved models can be loaded for prediction by a CPU-only build.
+For a dependent package, add `features = ["metal"]` to its dependency declaration and set `backend: Backend::Metal` in `TrainingConfig`. An unavailable or failed Metal backend returns an error; there is no implicit CPU fallback. Histograms, split finding, row partitioning, leaf score updates, and loss derivatives execute residently on Metal GPU; tree topology orchestration and candidate threshold certification remain on CPU. Saved models can be loaded for prediction by a CPU-only build.
 
 The default histogram workspace cap is 256 MiB. It covers live host histogram/cache arrays and GPU partial/output buffers. Dataset, model, score, derivative, row-membership, and framework storage are additional memory. See [Metal execution](docs/metal.md) for prerequisites, allocation limits, and hardware validation.
 
@@ -81,12 +81,18 @@ The default histogram workspace cap is 256 MiB. It covers live host histogram/ca
 The three benchmark baselines are:
 
 - **Rust CPU:** this repository's trainer using CPU histograms.
-- **Rust Metal:** this repository's trainer using GPU histograms with CPU orchestration.
+- **Rust Metal:** this repository's trainer using resident GPU histograms, split scans, partitioning, and score updates.
 - **Upstream CPU:** the pinned bundled LightGBM C++ trainer, invoked through its C API by the benchmark tooling.
 
-On an Apple M4 Pro, the million-row, 64-feature L2 case with 63 bins took **8.86 s** on Rust Metal, **20.02 s** on Rust CPU, and **10.83 s** on upstream CPU. These are complete-training medians of five warm runs, including preprocessing, with one CPU thread. Validation RMSE matched to the displayed precision. At 255 bins, Metal took 19.97 s versus upstream CPU's 11.57 s. Small and medium workloads were slower on Metal than Rust CPU.
+On an Apple M4 Pro (20 GPU cores), the million-row, 64-feature workloads show substantial GPU speedups over single-threaded CPU baselines:
+- **L2 regression, 63 bins:** **6.70 s** on Rust Metal vs **17.48 s** on Rust CPU (2.61× faster) and **10.78 s** on Upstream CPU (1.61× faster).
+- **L2 regression, 255 bins:** **11.57 s** on Rust Metal vs **22.89 s** on Rust CPU (1.98× faster), matching Upstream CPU (**11.55 s**).
+- **Binary logloss, 63 bins:** **7.48 s** on Rust Metal vs **20.29 s** on Rust CPU (2.71× faster) and **12.76 s** on Upstream CPU (1.71× faster).
+- **Binary logloss, 255 bins:** **11.89 s** on Rust Metal vs **24.34 s** on Rust CPU (2.05× faster) and **12.34 s** on Upstream CPU (1.04× faster).
 
-See the [benchmark report](docs/benchmarks.md) for all 12 cases, cold timings, quality, memory interpretation, and reproduction commands. These results describe the measured workloads; GPU training is not universally faster.
+These are complete-training medians of five warm runs, including preprocessing, with one CPU thread. Small and medium workloads pay submission and synchronization overhead relative to arithmetic and are slower on Metal than CPU. Both faster and slower cases are retained; no universal GPU speedup is claimed.
+
+See the [benchmark report](docs/benchmarks.md) for all 12 cases, cold timings, quality, memory interpretation, and reproduction commands.
 
 ## Development and validation
 

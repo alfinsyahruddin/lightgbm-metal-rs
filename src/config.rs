@@ -143,6 +143,24 @@ pub struct TrainingReport {
     pub histogram_calls: u64,
     /// Direct histogram calls for leaves with at most 4,096 rows.
     pub small_leaf_histogram_calls: u64,
+    /// Detailed stage-by-stage timing breakdown for profiling.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stage_profile: Option<StageProfile>,
+}
+
+/// Stage-by-stage execution profiling breakdown for training.
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+pub struct StageProfile {
+    /// Time spent computing loss derivatives, in seconds.
+    pub derivatives_seconds: f64,
+    /// Time spent computing leaf totals, in seconds.
+    pub leaf_totals_seconds: f64,
+    /// Time spent searching for best splits, in seconds.
+    pub split_search_seconds: f64,
+    /// Time spent partitioning rows into child leaves, in seconds.
+    pub partitioning_seconds: f64,
+    /// Time spent updating training scores, in seconds.
+    pub score_update_seconds: f64,
 }
 
 #[cfg(test)]

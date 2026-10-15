@@ -12,7 +12,7 @@ mod model;
 mod objective;
 mod training;
 
-pub use config::{Backend, Objective, TrainingConfig, TrainingReport};
+pub use config::{Backend, Objective, StageProfile, TrainingConfig, TrainingReport};
 pub use dataset::DenseMatrix;
 pub use error::{Error, Result};
 pub use model::Model;
