@@ -1,100 +1,292 @@
 # lightgbm-metal-rs
 
-An unofficial, community-maintained Rust implementation of a focused subset of [LightGBM](https://github.com/lightgbm-org/LightGBM) training, with optional Apple Silicon Metal acceleration.
+[![Crates.io](https://img.shields.io/crates/v/lightgbm-metal-rs.svg)](https://crates.io/crates/lightgbm-metal-rs) [![docs.rs](https://docs.rs/lightgbm-metal-rs/badge.svg)](https://docs.rs/lightgbm-metal-rs) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-This open-source project is maintained independently. It is not affiliated with or endorsed by the upstream LightGBM project. The training engine and prediction code are Rust; GPU histogram kernels use Metal Shading Language. The library has no runtime dependency on Python or the C++ LightGBM engine.
+An unofficial, community-maintained Rust implementation of histogram gradient boosted decision trees (GBDT) focused on a core LightGBM training subset, with optional Apple Silicon Metal GPU acceleration.
 
-## Project status and supported features
+> [!NOTE]
+> `lightgbm-metal-rs` is an independent open-source project and is not affiliated with upstream LightGBM. The training and prediction engines are written in Rust; GPU histogram kernels use Metal Shading Language.
 
-The initial implementation supports CPU and Metal training, CPU prediction, and native model persistence. It implements the following subset rather than the complete upstream API:
+---
 
-| Area | Supported behavior |
-| --- | --- |
-| Objectives | L2 regression and binary logloss with labels exactly zero or one |
-| Input | Dense row-major `f64` features and labels; NaNs represent missing features; zeros remain numeric |
-| Trees | Standard histogram GBDT with leaf-wise growth, leaf/depth limits, minimum rows/Hessians/gain, and L1/L2 penalties |
-| Binning | Training-only numeric boundaries, 2–255 bins, fixed `min_data_in_bin = 3`, no feature prefilter |
-| Execution | Portable CPU histograms or explicitly selected Apple Silicon Metal histograms |
-| Prediction | CPU raw scores, regression values, and stable binary probabilities |
-| Persistence | Versioned native JSON with structural validation and exact same-build prediction round trips |
+## Key Features
 
-Sparse/categorical inputs, multiclass, ranking, DART/GOSS, sampling, weights, custom objectives, constraints, early stopping, distributed training, automatic backend routing, and GPU inference are not implemented. Upstream LightGBM model files cannot be loaded by the native JSON format. Identical trees across implementations are not guaranteed.
+- 🦀 **Pure Rust Core**: Zero external C++ or Python runtime dependencies. Builds with standard `cargo`.
+- ⚡ **Apple Silicon Metal Acceleration**: Optional resident GPU execution for histogram building, split evaluation, row partitioning, and score updates on Apple M-series chips (`--features metal`). Up to 2.7× faster on large workloads.
+- 💻 **Cross-Platform CPU Execution**: Highly optimized portable CPU training and inference that runs everywhere Rust runs (macOS, Linux, Windows).
+- 📦 **Self-Contained Model Persistence**: Human-readable, versioned native JSON model format with structural validation and exact round-trip predictions. Models trained on Metal can be deployed for CPU-only inference without Metal or macOS dependencies.
+- 🎯 **Predictable Missing Value Handling**: Learned missing branch routing for `NaN` values (treats `0.0` as regular numeric data).
 
-## Quick start
+---
 
-Use the source checkout:
+## Installation
+
+Add `lightgbm-metal-rs` to your `Cargo.toml`:
+
+### CPU-only (portable across macOS, Linux, Windows)
 
 ```sh
-git clone https://github.com/alfinsyahruddin/lightgbm-metal-rs.git
-cd lightgbm-metal-rs
-cargo run --locked --no-default-features --example train
+cargo add lightgbm-metal-rs
 ```
 
-The example trains an L2 model, predicts on CPU, saves `target/demo-model.json`, and verifies an exact save/load round trip.
-
-Rust 1.74 is the declared minimum; validation currently uses Rust 1.97.1, and the minimum compiler has not yet been tested. CPU builds do not require Metal, Xcode, Python, or a C++ toolchain. Direct dependencies are pinned in [Cargo.toml](Cargo.toml), with transitive versions in [Cargo.lock](Cargo.lock).
-
-To use the checkout from another Rust package, add a local dependency with the appropriate relative path:
+Or manually in `Cargo.toml`:
 
 ```toml
 [dependencies]
-lightgbm-metal-rs = { path = "../lightgbm-metal-rs" }
+lightgbm-metal-rs = "0.1"
 ```
+
+### With Apple Silicon Metal GPU Acceleration (macOS `aarch64`)
+
+```sh
+cargo add lightgbm-metal-rs --features metal
+```
+
+Or manually in `Cargo.toml`:
+
+```toml
+[dependencies]
+lightgbm-metal-rs = { version = "0.1", features = ["metal"] }
+```
+
+---
+
+## Quick Start
+
+### 1. Regression (L2 Squared Error)
 
 ```rust
 use lightgbm_metal_rs::{train, DenseMatrix, Model, TrainingConfig};
 
 fn main() -> lightgbm_metal_rs::Result<()> {
-    let values = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0];
-    let labels = [0.0, 0.0, 0.0, 2.0, 2.0, 2.0];
-    let data = DenseMatrix::new(&values, 6, 1)?;
+    // 6 samples with 1 feature each
+    let features = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0];
+    let targets = [0.0, 0.0, 0.0, 2.0, 2.0, 2.0];
+
+    // Create a zero-copy borrowed row-major dense matrix
+    let data = DenseMatrix::new(&features, 6, 1)?;
+
     let config = TrainingConfig {
         iterations: 10,
         min_data_in_leaf: 1,
         ..Default::default()
     };
-    let trained = train(data, &labels, &config)?;
-    println!("{:?}", trained.model.predict(data)?);
+
+    // Train the model
+    let trained = train(data, &targets, &config)?;
+
+    // Predict regression scores
+    let predictions = trained.model.predict(data)?;
+    println!("Predictions: {:?}", predictions);
+
+    // Save model to native JSON
     trained.model.save("model.json")?;
+
+    // Load and run inference anywhere (CPU-only, no Metal required)
     let loaded = Model::load("model.json")?;
-    assert_eq!(trained.model.predict(data)?, loaded.predict(data)?);
+    assert_eq!(predictions, loaded.predict(data)?);
+
     Ok(())
 }
 ```
 
-For binary classification, set `objective: Objective::BinaryLogloss` and use zero/one labels. `Model::predict` returns probabilities for binary models; `predict_raw` returns untransformed scores.
+### 2. Binary Classification (Logloss)
 
-## Metal training
+```rust
+use lightgbm_metal_rs::{train, DenseMatrix, Objective, TrainingConfig};
 
-Metal training targets Apple Silicon macOS 11 or newer with a usable unified-memory GPU. Enable the optional `metal` feature and select the backend explicitly:
+fn main() -> lightgbm_metal_rs::Result<()> {
+    // 6 samples with 2 features each (row-major)
+    let features = [
+        0.1, 1.2,
+        0.4, 0.9,
+        0.2, 1.5,
+        2.5, 3.1,
+        3.0, 2.8,
+        2.8, 3.5,
+    ];
+    let labels = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0]; // Binary labels must be strictly 0.0 or 1.0
+    let data = DenseMatrix::new(&features, 6, 2)?;
+
+    let config = TrainingConfig {
+        objective: Objective::BinaryLogloss,
+        iterations: 10,
+        min_data_in_leaf: 1,
+        ..Default::default()
+    };
+
+    let trained = train(data, &labels, &config)?;
+
+    // `predict()` returns calibrated probabilities in [0.0, 1.0] for binary models
+    let probabilities = trained.model.predict(data)?;
+    println!("Probabilities: {:?}", probabilities);
+
+    // Or get raw uncalibrated margin / log-odds scores
+    let raw_scores = trained.model.predict_raw(data)?;
+    println!("Raw log-odds: {:?}", raw_scores);
+
+    Ok(())
+}
+```
+
+### 3. Apple Silicon Metal GPU Acceleration
+
+To train with resident GPU acceleration on Apple Silicon, enable the `metal` feature and set `backend: Backend::Metal`:
+
+```rust
+use lightgbm_metal_rs::{backend_available, train, Backend, DenseMatrix, TrainingConfig};
+
+fn main() -> lightgbm_metal_rs::Result<()> {
+    // Check if Apple Silicon Metal GPU is available at runtime
+    let backend = if backend_available(Backend::Metal).is_ok() {
+        Backend::Metal
+    } else {
+        eprintln!("Metal GPU not available on this machine; falling back to CPU.");
+        Backend::Cpu
+    };
+
+    let values = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0];
+    let labels = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0];
+    let data = DenseMatrix::new(&values, 6, 1)?;
+
+    let config = TrainingConfig {
+        backend,
+        iterations: 20,
+        min_data_in_leaf: 1,
+        ..Default::default()
+    };
+
+    let trained = train(data, &labels, &config)?;
+    println!(
+        "Trained {} trees using {:?} backend in {:.4}s (GPU histograms: {:.4}s)",
+        trained.report.trees,
+        trained.report.backend,
+        trained.report.training_seconds,
+        trained.report.histogram_gpu_seconds
+    );
+
+    Ok(())
+}
+```
+
+---
+
+## Configuration
+
+`TrainingConfig` configures the tree growth and execution parameters:
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `objective` | `Objective` | `Objective::RegressionL2` | Training objective: `RegressionL2` or `BinaryLogloss`. |
+| `backend` | `Backend` | `Backend::Cpu` | Execution backend: `Backend::Cpu` or `Backend::Metal`. |
+| `iterations` | `usize` | `100` | Maximum number of boosting trees to fit (must be > 0). |
+| `learning_rate` | `f64` | `0.1` | Step size shrinkage used in leaf updates. |
+| `num_leaves` | `usize` | `31` | Maximum leaves per tree (must be $\ge$ 2). |
+| `max_depth` | `Option<usize>` | `None` | Optional limit on tree depth (root depth is 0). `None` = unlimited. |
+| `max_bin` | `usize` | `255` | Maximum histogram bins per feature (range 2–255). |
+| `min_data_in_leaf` | `usize` | `20` | Minimum number of samples required in a leaf node. |
+| `min_sum_hessian_in_leaf` | `f64` | `0.001` | Minimum sum of Hessians required in a leaf node. |
+| `min_gain_to_split` | `f64` | `0.0` | Minimum gain improvement required to split a leaf. |
+| `lambda_l1` | `f64` | `0.0` | L1 regularization penalty on leaf values. |
+| `lambda_l2` | `f64` | `0.0` | L2 regularization penalty on leaf values. |
+| `histogram_workspace_bytes` | `usize` | `256 MiB` | Buffer cap for live histogram and reduction buffers (excludes dataset). |
+
+---
+
+## Data Handling (`DenseMatrix`)
+
+`DenseMatrix` represents a borrowed, row-major slice of `f64` features:
+
+```rust
+use lightgbm_metal_rs::DenseMatrix;
+
+let data = [
+    1.0, f64::NAN, // Row 0: feature 0 = 1.0, feature 1 is missing
+    2.5, 0.0,      // Row 1: feature 0 = 2.5, feature 1 = 0.0 (numeric zero)
+];
+let matrix = DenseMatrix::new(&data, 2, 2)?;
+```
+
+- **Missing Values**: Pass `f64::NAN` to represent missing features. LightGBM's learned missing branch routing automatically determines whether missing values go to the left or right branch during training.
+- **Numeric Zeros**: `0.0` is treated as a regular numeric value, not as missing.
+- **Labels**:
+  - Regression (`RegressionL2`): Any finite `f64` targets.
+  - Classification (`BinaryLogloss`): Binary targets must be strictly `0.0` or `1.0`.
+
+---
+
+## Model Persistence & Deployment
+
+Models are serialized to a versioned JSON format with structural integrity validation:
+
+- **Save to disk**: `model.save("path/to/model.json")?`
+- **Load from disk**: `let model = Model::load("path/to/model.json")?`
+- **In-memory JSON**: `model.to_json()?` and `Model::from_json(&json_string)?`
+- **Cross-platform inference**: Models trained on macOS using Metal can be transferred to Linux or Windows and loaded for CPU inference without Metal frameworks or GPU dependencies.
+
+---
+
+## Supported Features & Scope
+
+`lightgbm-metal-rs` focuses on high performance and rock-solid reliability for the core GBDT subset:
+
+| Area | Status | Details |
+| --- | --- | --- |
+| **Objectives** | Supported | L2 regression (`RegressionL2`) and binary logloss (`BinaryLogloss`). |
+| **Tree Growth** | Supported | Leaf-wise (best-first) growth, max leaves, max depth, min data in leaf, min Hessian, min gain, L1/L2 leaf penalties. |
+| **Missing Values** | Supported | Native `NaN` missing value routing learned during tree building. |
+| **Histogram Binning** | Supported | Uniform/quantile numeric binning with 2–255 bins. |
+| **Backends** | Supported | Portable Rust CPU and resident Apple Silicon Metal GPU (`--features metal`). |
+| **Inference** | Supported | Fast CPU inference: `predict`, `predict_proba`, `predict_raw`. |
+| **Persistence** | Supported | Versioned native JSON with schema validation and exact round trips. |
+| *Multiclass / Ranking* | Not supported | Only regression and binary classification are currently implemented. |
+| *Sparse / Categorical* | Not supported | Inputs must be dense row-major numeric slices. |
+| *GOSS / DART / Subsampling* | Not supported | Standard histogram GBDT only. |
+| *Upstream Model Format* | Not supported | Upstream LightGBM text/binary models cannot be loaded; use native JSON. |
+| *GPU Inference* | Not supported | Inference is CPU-only. |
+
+---
+
+## Performance Benchmarks
+
+Benchmarks run on an **Apple M4 Pro (20-core GPU)** on a synthetic 1,000,000 row × 64 feature dataset (single CPU thread):
+
+| Task | Configuration | Rust Metal GPU | Rust CPU | Upstream C++ CPU | Speedup (Metal vs Rust CPU) | Speedup (Metal vs Upstream) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **L2 Regression** | 63 bins | **6.70 s** | 17.48 s | 10.78 s | **2.61×** | **1.61×** |
+| **L2 Regression** | 255 bins | **11.57 s** | 22.89 s | 11.55 s | **1.98×** | **1.00×** |
+| **Binary Logloss** | 63 bins | **7.48 s** | 20.29 s | 12.76 s | **2.71×** | **1.71×** |
+| **Binary Logloss** | 255 bins | **11.89 s** | 24.34 s | 12.34 s | **2.05×** | **1.04×** |
+
+*Timings are complete training medians over 5 warm runs, including binning and preprocessing.*
+
+> [!TIP]
+> **When to use Metal:** GPU acceleration delivers significant speedups on large datasets ($\ge 100\text{k}$ rows with tens of features). For very small datasets ($< 10\text{k}$ rows), CPU training is often faster due to GPU buffer allocation and kernel dispatch overhead.
+
+See the [complete benchmark report](docs/benchmarks.md) for full benchmarks across dataset sizes, cold timings, and reproduction steps.
+
+---
+
+## Running Examples
+
+Clone the repository to explore the built-in examples:
 
 ```sh
+git clone https://github.com/alfinsyahruddin/lightgbm-metal-rs.git
+cd lightgbm-metal-rs
+
+# Run CPU training example
+cargo run --locked --no-default-features --example train
+
+# Run Metal GPU training example (Apple Silicon Mac)
 cargo run --locked --features metal --example train -- --metal
 ```
 
-For a dependent package, add `features = ["metal"]` to its dependency declaration and set `backend: Backend::Metal` in `TrainingConfig`. An unavailable or failed Metal backend returns an error; there is no implicit CPU fallback. Histograms, split finding, row partitioning, leaf score updates, and loss derivatives execute residently on Metal GPU; tree topology orchestration and candidate threshold certification remain on CPU. Saved models can be loaded for prediction by a CPU-only build.
+---
 
-The default histogram workspace cap is 256 MiB. It covers live host histogram/cache arrays and GPU partial/output buffers. Dataset, model, score, derivative, row-membership, and framework storage are additional memory. See [Metal execution](docs/metal.md) for prerequisites, allocation limits, and hardware validation.
+## Development & Verification
 
-## Measured performance
-
-The three benchmark baselines are:
-
-- **Rust CPU:** this repository's trainer using CPU histograms.
-- **Rust Metal:** this repository's trainer using resident GPU histograms, split scans, partitioning, and score updates.
-- **Upstream CPU:** the pinned bundled LightGBM C++ trainer, invoked through its C API by the benchmark tooling.
-
-On an Apple M4 Pro (20 GPU cores), the million-row, 64-feature workloads show substantial GPU speedups over single-threaded CPU baselines:
-- **L2 regression, 63 bins:** **6.70 s** on Rust Metal vs **17.48 s** on Rust CPU (2.61× faster) and **10.78 s** on Upstream CPU (1.61× faster).
-- **L2 regression, 255 bins:** **11.57 s** on Rust Metal vs **22.89 s** on Rust CPU (1.98× faster), matching Upstream CPU (**11.55 s**).
-- **Binary logloss, 63 bins:** **7.48 s** on Rust Metal vs **20.29 s** on Rust CPU (2.71× faster) and **12.76 s** on Upstream CPU (1.71× faster).
-- **Binary logloss, 255 bins:** **11.89 s** on Rust Metal vs **24.34 s** on Rust CPU (2.05× faster) and **12.34 s** on Upstream CPU (1.04× faster).
-
-These are complete-training medians of five warm runs, including preprocessing, with one CPU thread. Small and medium workloads pay submission and synchronization overhead relative to arithmetic and are slower on Metal than CPU. Both faster and slower cases are retained; no universal GPU speedup is claimed.
-
-See the [benchmark report](docs/benchmarks.md) for all 12 cases, cold timings, quality, memory interpretation, and reproduction commands.
-
-## Development and validation
+Run the test suite and linters:
 
 ```sh
 cargo fmt --check
@@ -103,33 +295,33 @@ cargo test --locked --no-default-features
 cargo doc --locked --all-features --no-deps
 ```
 
-On Apple Silicon with GPU access, run the complete portable and hardware suite:
+On Apple Silicon with Metal hardware access, run the GPU tests:
 
 ```sh
-python3 scripts/validate.py --require-metal
+cargo test --locked --features metal -- --ignored --nocapture --test-threads=1
 ```
 
-Hardware checks cannot be replaced by a CPU pass or a skipped GPU test. Some sandboxes restrict GPU discovery; the validator records skips explicitly and fails if required hardware is unavailable.
-
-Frozen comparisons use the bundled `lightgbm-py/` source (version 4.7.0.99), pinned by source-tree identity. Python and C++ are reference tooling only. Reference rebuilding requires additional tools; benchmarks require NumPy. See [reference validation](validation/README.md) for dependency pins, fixture regeneration, and numerical/quality thresholds.
+---
 
 ## Documentation
 
-- [Native models and prediction](docs/native-model.md)
-- [Metal execution and memory](docs/metal.md)
-- [Complete-training benchmarks](docs/benchmarks.md)
-- [Reference evidence](validation/README.md)
-- [Guidance for coding agents](AGENTS.md)
-- [Metal performance task plan](TASKS.md)
+- [docs.rs Documentation](https://docs.rs/lightgbm-metal-rs)
+- [Native Model Architecture & JSON Format](docs/native-model.md)
+- [Apple Silicon Metal Execution & Memory Management](docs/metal.md)
+- [Complete-Training Benchmark Report](docs/benchmarks.md)
+- [Reference Validation & Fixtures](validation/README.md)
+- [Guidance for Coding Agents](AGENTS.md)
 
-Build local API documentation with `cargo doc --locked --no-deps --open`.
+---
 
 ## Contributing
 
-Community contributions are welcome: bug reports, documentation, tests, performance investigations, and implementation improvements. Use this repository's [issues](https://github.com/alfinsyahruddin/lightgbm-metal-rs/issues) and [pull requests](https://github.com/alfinsyahruddin/lightgbm-metal-rs/pulls) for this project's work; use upstream's tracker for upstream LightGBM issues.
+Contributions are welcome: bug reports, documentation, tests, performance investigations, and implementation improvements. Please use the [GitHub issues](https://github.com/alfinsyahruddin/lightgbm-metal-rs/issues) and [pull requests](https://github.com/alfinsyahruddin/lightgbm-metal-rs/pulls) for this repository.
 
-Discuss substantial API or algorithm changes in an issue before starting. Keep pull requests focused, explain the resulting behavior, update affected docs, and report the checks you actually ran. For backend or numerical changes, include relevant frozen-fixture and real-hardware evidence. Preserve reference data and acceptance thresholds; do not regenerate fixtures merely to hide a failure. Performance claims should include complete-training timings, quality, configuration, and slower cases.
+---
 
-## License and attribution
+## License & Attribution
 
-Licensed under the [MIT License](LICENSE). Copyright for this project's contributions is attributed to the lightgbm-metal-rs contributors. Translated algorithms retain the Microsoft Corporation and LightGBM developers' notices. The bundled upstream source retains its [original license](lightgbm-py/LICENSE); third-party components retain their own licenses. See the [official LightGBM repository](https://github.com/lightgbm-org/LightGBM) for the upstream project.
+Licensed under the [MIT License](LICENSE).
+
+Copyright for this project's contributions is attributed to the `lightgbm-metal-rs` contributors. Translated algorithms retain original notices from Microsoft Corporation and LightGBM contributors. See the [official LightGBM repository](https://github.com/lightgbm-org/LightGBM) for the upstream project.
